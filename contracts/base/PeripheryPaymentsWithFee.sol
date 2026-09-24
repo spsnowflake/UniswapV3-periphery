@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
+// （翻译）SPDX 许可证标识：GPL-2.0 或更高版本
 pragma solidity >=0.7.5;
 
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
@@ -13,7 +14,7 @@ import '../libraries/TransferHelper.sol';
 abstract contract PeripheryPaymentsWithFee is PeripheryPayments, IPeripheryPaymentsWithFee {
     using LowGasSafeMath for uint256;
 
-    /// @inheritdoc IPeripheryPaymentsWithFee
+    /// （翻译）IPeripheryPaymentsWithFee
     function unwrapWETH9WithFee(
         uint256 amountMinimum,
         address recipient,
@@ -33,7 +34,7 @@ abstract contract PeripheryPaymentsWithFee is PeripheryPayments, IPeripheryPayme
         }
     }
 
-    /// @inheritdoc IPeripheryPaymentsWithFee
+    /// （翻译）IPeripheryPaymentsWithFee
     function sweepTokenWithFee(
         address token,
         uint256 amountMinimum,

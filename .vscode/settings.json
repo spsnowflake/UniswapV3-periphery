@@ -1,0 +1,11 @@
+{
+  "files.associations": {
+    "*.sol": "solidity"
+  },
+  "solidity.telemetry": false,
+  "solidity.formatter": "none",
+  "[solidity]": {
+    "editor.gotoLocation.multipleDefinitions": "goto",
+    "editor.gotoLocation.multipleReferences": "goto"
+  }
+}

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
+// （翻译）SPDX 许可证标识：GPL-2.0 或更高版本
 pragma solidity =0.7.6;
 pragma abicoder v2;
 
@@ -15,16 +16,16 @@ import '../libraries/PoolAddress.sol';
 import '../libraries/CallbackValidation.sol';
 import '../libraries/PoolTicksCounter.sol';
 
-/// @title Provides quotes for swaps
-/// @notice Allows getting the expected amount out or amount in for a given swap without executing the swap
-/// @dev These functions are not gas efficient and should _not_ be called on chain. Instead, optimistically execute
-/// the swap and check the amounts in the callback.
+/// （翻译）标题：为兑换提供报价
+/// （翻译）说明：对一笔给定兑换，可以拿到预期的输出或输入数量，而不真正执行兑换
+/// （翻译）开发说明：这些函数不省 gas，不应当在链上调用。正确做法是乐观地执行
+/// （翻译）兑换，然后在回调里核对数量。
 contract QuoterV2 is IQuoterV2, IUniswapV3SwapCallback, PeripheryImmutableState {
     using Path for bytes;
     using SafeCast for uint256;
     using PoolTicksCounter for IUniswapV3Pool;
 
-    /// @dev Transient storage variable used to check a safety condition in exact output swaps.
+    /// （翻译）开发说明：临时存储变量，用来检查精确输出兑换里的一个安全条件。
     uint256 private amountOutCached;
 
     constructor(address _factory, address _WETH9) PeripheryImmutableState(_factory, _WETH9) {}
@@ -37,13 +38,14 @@ contract QuoterV2 is IQuoterV2, IUniswapV3SwapCallback, PeripheryImmutableState 
         return IUniswapV3Pool(PoolAddress.computeAddress(factory, PoolAddress.getPoolKey(tokenA, tokenB, fee)));
     }
 
-    /// @inheritdoc IUniswapV3SwapCallback
+    /// （翻译）IUniswapV3SwapCallback
     function uniswapV3SwapCallback(
         int256 amount0Delta,
         int256 amount1Delta,
         bytes memory path
     ) external view override {
-        require(amount0Delta > 0 || amount1Delta > 0); // swaps entirely within 0-liquidity regions are not supported
+        require(amount0Delta > 0 || amount1Delta > 0);
+        // （翻译）完全落在零流动性区间内的兑换不受支持
         (address tokenIn, address tokenOut, uint24 fee) = path.decodeFirstPool();
         CallbackValidation.verifyCallback(factory, tokenIn, tokenOut, fee);
 
@@ -64,7 +66,7 @@ contract QuoterV2 is IQuoterV2, IUniswapV3SwapCallback, PeripheryImmutableState 
                 revert(ptr, 96)
             }
         } else {
-            // if the cache has been populated, ensure that the full output amount has been received
+            // （翻译）如果缓存已经被写入，就确认已经收到了完整的输出数量
             if (amountOutCached != 0) require(amountReceived == amountOutCached);
             assembly {
                 let ptr := mload(0x40)
@@ -76,7 +78,7 @@ contract QuoterV2 is IQuoterV2, IUniswapV3SwapCallback, PeripheryImmutableState 
         }
     }
 
-    /// @dev Parses a revert reason that should contain the numeric quote
+    /// （翻译）开发说明：解析应当包含数字报价的 revert 数据
     function parseRevertReason(bytes memory reason)
         private
         pure
@@ -136,7 +138,8 @@ contract QuoterV2 is IQuoterV2, IUniswapV3SwapCallback, PeripheryImmutableState 
         uint256 gasBefore = gasleft();
         try
             pool.swap(
-                address(this), // address(0) might cause issues with some tokens
+                address(this),
+                // （翻译）有些代币把 address(0) 当接收方会出问题
                 zeroForOne,
                 params.amountIn.toInt256(),
                 params.sqrtPriceLimitX96 == 0
@@ -167,7 +170,7 @@ contract QuoterV2 is IQuoterV2, IUniswapV3SwapCallback, PeripheryImmutableState 
         while (true) {
             (address tokenIn, address tokenOut, uint24 fee) = path.decodeFirstPool();
 
-            // the outputs of prior swaps become the inputs to subsequent ones
+            // （翻译）前一跳的输出，变成后一跳的输入
             (uint256 _amountOut, uint160 _sqrtPriceX96After, uint32 _initializedTicksCrossed, uint256 _gasEstimate) =
                 quoteExactInputSingle(
                     QuoteExactInputSingleParams({
@@ -185,7 +188,7 @@ contract QuoterV2 is IQuoterV2, IUniswapV3SwapCallback, PeripheryImmutableState 
             gasEstimate += _gasEstimate;
             i++;
 
-            // decide whether to continue or terminate
+            // （翻译）决定继续下一跳，还是在这里结束
             if (path.hasMultiplePools()) {
                 path = path.skipToken();
             } else {
@@ -207,12 +210,13 @@ contract QuoterV2 is IQuoterV2, IUniswapV3SwapCallback, PeripheryImmutableState 
         bool zeroForOne = params.tokenIn < params.tokenOut;
         IUniswapV3Pool pool = getPool(params.tokenIn, params.tokenOut, params.fee);
 
-        // if no price limit has been specified, cache the output amount for comparison in the swap callback
+        // （翻译）如果没有指定价格限制，就把输出数量缓存起来，供兑换回调里比较
         if (params.sqrtPriceLimitX96 == 0) amountOutCached = params.amount;
         uint256 gasBefore = gasleft();
         try
             pool.swap(
-                address(this), // address(0) might cause issues with some tokens
+                address(this),
+                // （翻译）有些代币把 address(0) 当接收方会出问题
                 zeroForOne,
                 -params.amount.toInt256(),
                 params.sqrtPriceLimitX96 == 0
@@ -222,7 +226,8 @@ contract QuoterV2 is IQuoterV2, IUniswapV3SwapCallback, PeripheryImmutableState 
             )
         {} catch (bytes memory reason) {
             gasEstimate = gasBefore - gasleft();
-            if (params.sqrtPriceLimitX96 == 0) delete amountOutCached; // clear cache
+            if (params.sqrtPriceLimitX96 == 0) delete amountOutCached;
+            // （翻译）清空缓存
             return handleRevert(reason, pool, gasEstimate);
         }
     }
@@ -244,7 +249,7 @@ contract QuoterV2 is IQuoterV2, IUniswapV3SwapCallback, PeripheryImmutableState 
         while (true) {
             (address tokenOut, address tokenIn, uint24 fee) = path.decodeFirstPool();
 
-            // the inputs of prior swaps become the outputs of subsequent ones
+            // （翻译）前一跳的输入，变成后一跳要换出的数量
             (uint256 _amountIn, uint160 _sqrtPriceX96After, uint32 _initializedTicksCrossed, uint256 _gasEstimate) =
                 quoteExactOutputSingle(
                     QuoteExactOutputSingleParams({
@@ -262,7 +267,7 @@ contract QuoterV2 is IQuoterV2, IUniswapV3SwapCallback, PeripheryImmutableState 
             gasEstimate += _gasEstimate;
             i++;
 
-            // decide whether to continue or terminate
+            // （翻译）决定继续下一跳，还是在这里结束
             if (path.hasMultiplePools()) {
                 path = path.skipToken();
             } else {

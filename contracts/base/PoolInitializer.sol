@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
+// （翻译）SPDX 许可证标识：GPL-2.0 或更高版本
 pragma solidity =0.7.6;
 
 import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol';
@@ -7,9 +8,9 @@ import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 import './PeripheryImmutableState.sol';
 import '../interfaces/IPoolInitializer.sol';
 
-/// @title Creates and initializes V3 Pools
+/// （翻译）标题：创建并初始化 V3 池子
 abstract contract PoolInitializer is IPoolInitializer, PeripheryImmutableState {
-    /// @inheritdoc IPoolInitializer
+    /// （翻译）IPoolInitializer
     function createAndInitializePoolIfNecessary(
         address token0,
         address token1,

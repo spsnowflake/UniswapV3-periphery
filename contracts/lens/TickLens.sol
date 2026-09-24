@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
+// （翻译）SPDX 许可证标识：GPL-2.0 或更高版本
 pragma solidity >=0.5.0;
 pragma abicoder v2;
 
@@ -6,25 +7,25 @@ import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 
 import '../interfaces/ITickLens.sol';
 
-/// @title Tick Lens contract
+/// （翻译）标题：Tick Lens 合约
 contract TickLens is ITickLens {
-    /// @inheritdoc ITickLens
+    /// （翻译）ITickLens
     function getPopulatedTicksInWord(address pool, int16 tickBitmapIndex)
         public
         view
         override
         returns (PopulatedTick[] memory populatedTicks)
     {
-        // fetch bitmap
+        // （翻译）读取位图
         uint256 bitmap = IUniswapV3Pool(pool).tickBitmap(tickBitmapIndex);
 
-        // calculate the number of populated ticks
+        // （翻译）计算已占用 tick 的数量
         uint256 numberOfPopulatedTicks;
         for (uint256 i = 0; i < 256; i++) {
             if (bitmap & (1 << i) > 0) numberOfPopulatedTicks++;
         }
 
-        // fetch populated tick data
+        // （翻译）读取已占用 tick 的数据
         int24 tickSpacing = IUniswapV3Pool(pool).tickSpacing();
         populatedTicks = new PopulatedTick[](numberOfPopulatedTicks);
         for (uint256 i = 0; i < 256; i++) {

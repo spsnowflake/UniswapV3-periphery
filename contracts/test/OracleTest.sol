@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
+// （翻译）SPDX 许可证标识：未授予开源许可证（测试或私有代码）
 pragma solidity =0.7.6;
 pragma abicoder v2;
 
@@ -22,7 +23,7 @@ contract OracleTest {
         quoteAmount = OracleLibrary.getQuoteAtTick(tick, baseAmount, baseToken, quoteToken);
     }
 
-    // For gas snapshot test
+    // （翻译）给 gas 快照测试用
     function getGasCostOfConsult(address pool, uint32 period) public view returns (uint256) {
         uint256 gasBefore = gasleft();
         OracleLibrary.consult(pool, period);

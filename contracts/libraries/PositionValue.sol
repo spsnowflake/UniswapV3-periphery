@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
+// （翻译）SPDX 许可证标识：GPL-2.0 或更高版本
 pragma solidity >=0.6.8 <0.8.0;
 
 import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
@@ -10,15 +11,15 @@ import './LiquidityAmounts.sol';
 import './PoolAddress.sol';
 import './PositionKey.sol';
 
-/// @title Returns information about the token value held in a Uniswap V3 NFT
+/// （翻译）标题：返回 Uniswap V3 NFT 所持代币价值的信息
 library PositionValue {
-    /// @notice Returns the total amounts of token0 and token1, i.e. the sum of fees and principal
-    /// that a given nonfungible position manager token is worth
-    /// @param positionManager The Uniswap V3 NonfungiblePositionManager
-    /// @param tokenId The tokenId of the token for which to get the total value
-    /// @param sqrtRatioX96 The square root price X96 for which to calculate the principal amounts
-    /// @return amount0 The total amount of token0 including principal and fees
-    /// @return amount1 The total amount of token1 including principal and fees
+    /// （翻译）说明：返回 token0 和 token1 的总量，也就是手续费加本金
+    /// （翻译）某一枚头寸管理 NFT 所值的数量
+    /// （翻译）参数 positionManager：Uniswap V3 的 NonfungiblePositionManager
+    /// （翻译）参数 tokenId：要查询总价值的那枚代币的 tokenId
+    /// （翻译）参数 sqrtRatioX96：用来计算本金数量的平方根价格 X96
+    /// （翻译）返回 amount0：token0 总量，含本金和手续费
+    /// （翻译）返回 amount1：token1 总量，含本金和手续费
     function total(
         INonfungiblePositionManager positionManager,
         uint256 tokenId,
@@ -29,13 +30,13 @@ library PositionValue {
         return (amount0Principal + amount0Fee, amount1Principal + amount1Fee);
     }
 
-    /// @notice Calculates the principal (currently acting as liquidity) owed to the token owner in the event
-    /// that the position is burned
-    /// @param positionManager The Uniswap V3 NonfungiblePositionManager
-    /// @param tokenId The tokenId of the token for which to get the total principal owed
-    /// @param sqrtRatioX96 The square root price X96 for which to calculate the principal amounts
-    /// @return amount0 The principal amount of token0
-    /// @return amount1 The principal amount of token1
+    /// （翻译）说明：计算若头寸被销毁，代币所有者应得的本金（当前充当流动性的那部分）
+    /// （翻译）也就是头寸被 burn 的时候
+    /// （翻译）参数 positionManager：Uniswap V3 的 NonfungiblePositionManager
+    /// （翻译）参数 tokenId：要查询应付本金的那枚代币的 tokenId
+    /// （翻译）参数 sqrtRatioX96：用来计算本金数量的平方根价格 X96
+    /// （翻译）返回 amount0：token0 本金数量
+    /// （翻译）返回 amount1：token1 本金数量
     function principal(
         INonfungiblePositionManager positionManager,
         uint256 tokenId,
@@ -65,11 +66,11 @@ library PositionValue {
         uint256 tokensOwed1;
     }
 
-    /// @notice Calculates the total fees owed to the token owner
-    /// @param positionManager The Uniswap V3 NonfungiblePositionManager
-    /// @param tokenId The tokenId of the token for which to get the total fees owed
-    /// @return amount0 The amount of fees owed in token0
-    /// @return amount1 The amount of fees owed in token1
+    /// （翻译）说明：计算应付给代币所有者的手续费总额
+    /// （翻译）参数 positionManager：Uniswap V3 的 NonfungiblePositionManager
+    /// （翻译）参数 tokenId：要查询应付手续费的那枚代币的 tokenId
+    /// （翻译）返回 amount0：以 token0 计的应付手续费
+    /// （翻译）返回 amount1：以 token1 计的应付手续费
     function fees(INonfungiblePositionManager positionManager, uint256 tokenId)
         internal
         view

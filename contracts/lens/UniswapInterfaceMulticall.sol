@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
+// （翻译）SPDX 许可证标识：MIT 许可证
 pragma solidity =0.7.6;
 pragma abicoder v2;
 
-/// @notice A fork of Multicall2 specifically tailored for the Uniswap Interface
+/// （翻译）说明：Multicall2 的一个分叉，专门给 Uniswap 界面用
 contract UniswapInterfaceMulticall {
     struct Call {
         address target;

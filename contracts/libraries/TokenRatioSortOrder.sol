@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+// （翻译）SPDX 许可证标识：MIT 许可证
 pragma solidity =0.7.6;
 
 library TokenRatioSortOrder {

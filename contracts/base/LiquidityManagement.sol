@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
+// （翻译）SPDX 许可证标识：GPL-2.0 或更高版本
 pragma solidity =0.7.6;
 pragma abicoder v2;
 
@@ -13,15 +14,15 @@ import '../libraries/LiquidityAmounts.sol';
 import './PeripheryPayments.sol';
 import './PeripheryImmutableState.sol';
 
-/// @title Liquidity management functions
-/// @notice Internal functions for safely managing liquidity in Uniswap V3
+/// （翻译）标题：流动性管理函数
+/// （翻译）说明：在 Uniswap V3 里安全管理流动性的内部函数
 abstract contract LiquidityManagement is IUniswapV3MintCallback, PeripheryImmutableState, PeripheryPayments {
     struct MintCallbackData {
         PoolAddress.PoolKey poolKey;
         address payer;
     }
 
-    /// @inheritdoc IUniswapV3MintCallback
+    /// （翻译）IUniswapV3MintCallback
     function uniswapV3MintCallback(
         uint256 amount0Owed,
         uint256 amount1Owed,
@@ -47,7 +48,7 @@ abstract contract LiquidityManagement is IUniswapV3MintCallback, PeripheryImmuta
         uint256 amount1Min;
     }
 
-    /// @notice Add liquidity to an initialized pool
+    /// （翻译）说明：向一个已经初始化的池子添加流动性
     function addLiquidity(AddLiquidityParams memory params)
         internal
         returns (
@@ -62,7 +63,7 @@ abstract contract LiquidityManagement is IUniswapV3MintCallback, PeripheryImmuta
 
         pool = IUniswapV3Pool(PoolAddress.computeAddress(factory, poolKey));
 
-        // compute the liquidity amount
+        // （翻译）计算流动性数量
         {
             (uint160 sqrtPriceX96, , , , , , ) = pool.slot0();
             uint160 sqrtRatioAX96 = TickMath.getSqrtRatioAtTick(params.tickLower);

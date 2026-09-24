@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
+// （翻译）SPDX 许可证标识：GPL-2.0 或更高版本
 pragma solidity =0.7.6;
 pragma abicoder v2;
 
@@ -13,8 +14,8 @@ import './libraries/PoolAddress.sol';
 import './libraries/NFTDescriptor.sol';
 import './libraries/TokenRatioSortOrder.sol';
 
-/// @title Describes NFT token positions
-/// @notice Produces a string containing the data URI for a JSON metadata string
+/// （翻译）标题：描述 NFT 头寸代币
+/// （翻译）说明：生成一个字符串，内容是 JSON 元数据的 data URI
 contract NonfungibleTokenPositionDescriptor is INonfungibleTokenPositionDescriptor {
     address private constant DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
     address private constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
@@ -23,7 +24,7 @@ contract NonfungibleTokenPositionDescriptor is INonfungibleTokenPositionDescript
     address private constant WBTC = 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599;
 
     address public immutable WETH9;
-    /// @dev A null-terminated string
+    /// （翻译）开发说明：以空字节结尾的字符串
     bytes32 public immutable nativeCurrencyLabelBytes;
 
     constructor(address _WETH9, bytes32 _nativeCurrencyLabelBytes) {
@@ -31,7 +32,7 @@ contract NonfungibleTokenPositionDescriptor is INonfungibleTokenPositionDescript
         nativeCurrencyLabelBytes = _nativeCurrencyLabelBytes;
     }
 
-    /// @notice Returns the native currency label as a string
+    /// （翻译）说明：把原生货币标签返回成字符串
     function nativeCurrencyLabel() public view returns (string memory) {
         uint256 len = 0;
         while (len < 32 && nativeCurrencyLabelBytes[len] != 0) {
@@ -44,7 +45,7 @@ contract NonfungibleTokenPositionDescriptor is INonfungibleTokenPositionDescript
         return string(b);
     }
 
-    /// @inheritdoc INonfungibleTokenPositionDescriptor
+    /// （翻译）INonfungibleTokenPositionDescriptor
     function tokenURI(INonfungiblePositionManager positionManager, uint256 tokenId)
         external
         view

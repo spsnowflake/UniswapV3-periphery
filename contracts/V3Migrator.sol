@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
+// （翻译）SPDX 许可证标识：GPL-2.0 或更高版本
 pragma solidity =0.7.6;
 pragma abicoder v2;
 
@@ -16,7 +17,7 @@ import './base/SelfPermit.sol';
 import './interfaces/external/IWETH9.sol';
 import './base/PoolInitializer.sol';
 
-/// @title Uniswap V3 Migrator
+/// （翻译）标题：Uniswap V3 迁移器
 contract V3Migrator is IV3Migrator, PeripheryImmutableState, PoolInitializer, Multicall, SelfPermit {
     using LowGasSafeMath for uint256;
 
@@ -38,19 +39,19 @@ contract V3Migrator is IV3Migrator, PeripheryImmutableState, PoolInitializer, Mu
         require(params.percentageToMigrate > 0, 'Percentage too small');
         require(params.percentageToMigrate <= 100, 'Percentage too large');
 
-        // burn v2 liquidity to this address
+        // （翻译）把 V2 流动性销毁到本合约地址，取出底层代币
         IUniswapV2Pair(params.pair).transferFrom(msg.sender, params.pair, params.liquidityToMigrate);
         (uint256 amount0V2, uint256 amount1V2) = IUniswapV2Pair(params.pair).burn(address(this));
 
-        // calculate the amounts to migrate to v3
+        // （翻译）计算要迁移到 V3 的数量
         uint256 amount0V2ToMigrate = amount0V2.mul(params.percentageToMigrate) / 100;
         uint256 amount1V2ToMigrate = amount1V2.mul(params.percentageToMigrate) / 100;
 
-        // approve the position manager up to the maximum token amounts
+        // （翻译）按最多可能用到的代币数量，授权给头寸管理合约
         TransferHelper.safeApprove(params.token0, nonfungiblePositionManager, amount0V2ToMigrate);
         TransferHelper.safeApprove(params.token1, nonfungiblePositionManager, amount1V2ToMigrate);
 
-        // mint v3 position
+        // （翻译）铸造 V3 头寸
         (, , uint256 amount0V3, uint256 amount1V3) =
             INonfungiblePositionManager(nonfungiblePositionManager).mint(
                 INonfungiblePositionManager.MintParams({
@@ -68,7 +69,7 @@ contract V3Migrator is IV3Migrator, PeripheryImmutableState, PoolInitializer, Mu
                 })
             );
 
-        // if necessary, clear allowance and refund dust
+        // （翻译）如有必要，清掉剩余授权，并把没用完的零头退回
         if (amount0V3 < amount0V2) {
             if (amount0V3 < amount0V2ToMigrate) {
                 TransferHelper.safeApprove(params.token0, nonfungiblePositionManager, 0);

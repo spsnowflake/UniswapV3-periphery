@@ -1,25 +1,26 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
+// （翻译）SPDX 许可证标识：GPL-2.0 或更高版本
 pragma solidity >=0.5.0;
 
 import '@uniswap/v3-core/contracts/libraries/FullMath.sol';
 import '@uniswap/v3-core/contracts/libraries/FixedPoint96.sol';
 
-/// @title Liquidity amount functions
-/// @notice Provides functions for computing liquidity amounts from token amounts and prices
+/// （翻译）标题：流动性数量函数
+/// （翻译）说明：根据代币数量和价格计算流动性数量的函数
 library LiquidityAmounts {
-    /// @notice Downcasts uint256 to uint128
-    /// @param x The uint258 to be downcasted
-    /// @return y The passed value, downcasted to uint128
+    /// （翻译）说明：把 uint256 向下收窄成 uint128
+    /// （翻译）参数 x：要向下收窄的整数（原文写成 uint258，实际类型是 uint256）
+    /// （翻译）返回 y：传入的值，已收窄为 uint128
     function toUint128(uint256 x) private pure returns (uint128 y) {
         require((y = uint128(x)) == x);
     }
 
-    /// @notice Computes the amount of liquidity received for a given amount of token0 and price range
-    /// @dev Calculates amount0 * (sqrt(upper) * sqrt(lower)) / (sqrt(upper) - sqrt(lower))
-    /// @param sqrtRatioAX96 A sqrt price representing the first tick boundary
-    /// @param sqrtRatioBX96 A sqrt price representing the second tick boundary
-    /// @param amount0 The amount0 being sent in
-    /// @return liquidity The amount of returned liquidity
+    /// （翻译）说明：给定 token0 数量和价格区间，计算能得到的流动性
+    /// （翻译）开发说明：计算 amount0 * (sqrt(upper) * sqrt(lower)) / (sqrt(upper) - sqrt(lower))
+    /// （翻译）参数 sqrtRatioAX96：第一个 tick 边界对应的平方根价格
+    /// （翻译）参数 sqrtRatioBX96：第二个 tick 边界对应的平方根价格
+    /// （翻译）参数 amount0：投入的 token0 数量
+    /// （翻译）返回 liquidity：算出来的流动性数量
     function getLiquidityForAmount0(
         uint160 sqrtRatioAX96,
         uint160 sqrtRatioBX96,
@@ -30,12 +31,12 @@ library LiquidityAmounts {
         return toUint128(FullMath.mulDiv(amount0, intermediate, sqrtRatioBX96 - sqrtRatioAX96));
     }
 
-    /// @notice Computes the amount of liquidity received for a given amount of token1 and price range
-    /// @dev Calculates amount1 / (sqrt(upper) - sqrt(lower)).
-    /// @param sqrtRatioAX96 A sqrt price representing the first tick boundary
-    /// @param sqrtRatioBX96 A sqrt price representing the second tick boundary
-    /// @param amount1 The amount1 being sent in
-    /// @return liquidity The amount of returned liquidity
+    /// （翻译）说明：给定 token1 数量和价格区间，计算能得到的流动性
+    /// （翻译）开发说明：计算 amount1 / (sqrt(upper) - sqrt(lower))。
+    /// （翻译）参数 sqrtRatioAX96：第一个 tick 边界对应的平方根价格
+    /// （翻译）参数 sqrtRatioBX96：第二个 tick 边界对应的平方根价格
+    /// （翻译）参数 amount1：投入的 token1 数量
+    /// （翻译）返回 liquidity：算出来的流动性数量
     function getLiquidityForAmount1(
         uint160 sqrtRatioAX96,
         uint160 sqrtRatioBX96,
@@ -45,14 +46,14 @@ library LiquidityAmounts {
         return toUint128(FullMath.mulDiv(amount1, FixedPoint96.Q96, sqrtRatioBX96 - sqrtRatioAX96));
     }
 
-    /// @notice Computes the maximum amount of liquidity received for a given amount of token0, token1, the current
-    /// pool prices and the prices at the tick boundaries
-    /// @param sqrtRatioX96 A sqrt price representing the current pool prices
-    /// @param sqrtRatioAX96 A sqrt price representing the first tick boundary
-    /// @param sqrtRatioBX96 A sqrt price representing the second tick boundary
-    /// @param amount0 The amount of token0 being sent in
-    /// @param amount1 The amount of token1 being sent in
-    /// @return liquidity The maximum amount of liquidity received
+    /// （翻译）说明：给定 token0、token1 数量以及当前
+    /// （翻译）池子价格和 tick 边界价格，计算能得到的最大流动性
+    /// （翻译）参数 sqrtRatioX96：表示池子当前价格的平方根价格
+    /// （翻译）参数 sqrtRatioAX96：第一个 tick 边界对应的平方根价格
+    /// （翻译）参数 sqrtRatioBX96：第二个 tick 边界对应的平方根价格
+    /// （翻译）参数 amount0：投入的 token0 数量
+    /// （翻译）参数 amount1：投入的 token1 数量
+    /// （翻译）返回 liquidity：能得到的最大流动性
     function getLiquidityForAmounts(
         uint160 sqrtRatioX96,
         uint160 sqrtRatioAX96,
@@ -74,11 +75,11 @@ library LiquidityAmounts {
         }
     }
 
-    /// @notice Computes the amount of token0 for a given amount of liquidity and a price range
-    /// @param sqrtRatioAX96 A sqrt price representing the first tick boundary
-    /// @param sqrtRatioBX96 A sqrt price representing the second tick boundary
-    /// @param liquidity The liquidity being valued
-    /// @return amount0 The amount of token0
+    /// （翻译）说明：给定流动性和价格区间，计算对应的 token0 数量
+    /// （翻译）参数 sqrtRatioAX96：第一个 tick 边界对应的平方根价格
+    /// （翻译）参数 sqrtRatioBX96：第二个 tick 边界对应的平方根价格
+    /// （翻译）参数 liquidity：正在估值的流动性
+    /// （翻译）返回 amount0：token0 的数量
     function getAmount0ForLiquidity(
         uint160 sqrtRatioAX96,
         uint160 sqrtRatioBX96,
@@ -94,11 +95,11 @@ library LiquidityAmounts {
             ) / sqrtRatioAX96;
     }
 
-    /// @notice Computes the amount of token1 for a given amount of liquidity and a price range
-    /// @param sqrtRatioAX96 A sqrt price representing the first tick boundary
-    /// @param sqrtRatioBX96 A sqrt price representing the second tick boundary
-    /// @param liquidity The liquidity being valued
-    /// @return amount1 The amount of token1
+    /// （翻译）说明：给定流动性和价格区间，计算对应的 token1 数量
+    /// （翻译）参数 sqrtRatioAX96：第一个 tick 边界对应的平方根价格
+    /// （翻译）参数 sqrtRatioBX96：第二个 tick 边界对应的平方根价格
+    /// （翻译）参数 liquidity：正在估值的流动性
+    /// （翻译）返回 amount1：token1 的数量
     function getAmount1ForLiquidity(
         uint160 sqrtRatioAX96,
         uint160 sqrtRatioBX96,
@@ -109,14 +110,14 @@ library LiquidityAmounts {
         return FullMath.mulDiv(liquidity, sqrtRatioBX96 - sqrtRatioAX96, FixedPoint96.Q96);
     }
 
-    /// @notice Computes the token0 and token1 value for a given amount of liquidity, the current
-    /// pool prices and the prices at the tick boundaries
-    /// @param sqrtRatioX96 A sqrt price representing the current pool prices
-    /// @param sqrtRatioAX96 A sqrt price representing the first tick boundary
-    /// @param sqrtRatioBX96 A sqrt price representing the second tick boundary
-    /// @param liquidity The liquidity being valued
-    /// @return amount0 The amount of token0
-    /// @return amount1 The amount of token1
+    /// （翻译）说明：给定一定数量的流动性，以及当前
+    /// （翻译）池子价格和 tick 边界价格，计算对应的 token0 和 token1 数量
+    /// （翻译）参数 sqrtRatioX96：表示池子当前价格的平方根价格
+    /// （翻译）参数 sqrtRatioAX96：第一个 tick 边界对应的平方根价格
+    /// （翻译）参数 sqrtRatioBX96：第二个 tick 边界对应的平方根价格
+    /// （翻译）参数 liquidity：正在估值的流动性
+    /// （翻译）返回 amount0：token0 的数量
+    /// （翻译）返回 amount1：token1 的数量
     function getAmountsForLiquidity(
         uint160 sqrtRatioX96,
         uint160 sqrtRatioAX96,

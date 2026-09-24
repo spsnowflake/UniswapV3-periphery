@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
+// （翻译）SPDX 许可证标识：未授予开源许可证（测试或私有代码）
 pragma solidity =0.7.6;
 
 import '../libraries/Path.sol';
@@ -28,7 +29,7 @@ contract PathTest {
         return Path.skipToken(path);
     }
 
-    // gas funcs
+    // （翻译）测 gas 的函数
     function getGasCostOfDecodeFirstPool(bytes memory path) public view returns (uint256) {
         uint256 gasBefore = gasleft();
         Path.decodeFirstPool(path);
