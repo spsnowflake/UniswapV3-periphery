@@ -57,24 +57,34 @@ abstract contract PeripheryPayments is IPeripheryPayments, PeripheryImmutableSta
 
     /// （翻译）参数 token：要支付的代币
     /// （翻译）参数 payer：必须付款的一方
-    /// （翻译）参数 recipient：接收付款的一方
+    /// （翻译）参数 recipient：接收付款的一方（在兑换回调里，这个地址就是核心池子。）
     /// （翻译）参数 value：支付数量
+
+    // 进入 pay 时，ETH 已经在路由器上了。用户调用 exactInput{value: ...} 这类 payable 函数时
+    // ETH 随那笔交易打进路由器。这里不会再从用户地址拉 ETH。
     function pay(
         address token,
         address payer,
         address recipient,
         uint256 value
     ) internal {
+        // address(this) 是实际跑这段代码的外围合约，比如 SwapRouter。
         if (token == WETH9 && address(this).balance >= value) {
             // （翻译）用 WETH9 支付
+            // 把 value 数量的 ETH 从路由器转到 WETH9 合约。WETH9 给调用者（路由器）铸出等额 WETH。
+            // ETH 离开外围合约，进入 WETH9 合约
             IWETH9(WETH9).deposit{value: value}();
             // （翻译）只把这次付款需要的 ETH 包装成 WETH9
+            // 把 WETH 发给接收方（核心池子）。
             IWETH9(WETH9).transfer(recipient, value);
         } else if (payer == address(this)) {
             // （翻译）用合约里已经有的代币支付（精确输入多跳的情况）
+            // 精确输入多跳的中间跳：上一跳的输出先打到路由器，下一跳回调时路由器再把这种代币付给下一个池子。
             TransferHelper.safeTransfer(token, recipient, value);
         } else {
             // （翻译）从付款人地址拉取代币来支付
+            // 如果用户付的本来就是钱包里的 WETH，路由器上没有足够 ETH，这个分支不会进，会落到这个分支，用 transferFrom 拉用户的 WETH。
+            // 用户必须事先给路由器授权。
             TransferHelper.safeTransferFrom(token, payer, recipient, value);
         }
     }

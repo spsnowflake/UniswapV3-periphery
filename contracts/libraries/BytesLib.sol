@@ -64,10 +64,18 @@ library BytesLib {
     }
 
     function toAddress(bytes memory _bytes, uint256 _start) internal pure returns (address) {
+        // 防溢出
         require(_start + 20 >= _start, 'toAddress_overflow');
+        // 保证从 _start 再读 20 字节不会越过路径末尾。
         require(_bytes.length >= _start + 20, 'toAddress_outOfBounds');
         address tempAddress;
 
+        // 从字节数组里取出这 20 字节
+        // bytes 在内存里，第一个 32 字节字存的是长度，真正的数据从 _bytes + 0x20 开始。
+        // mload 一次固定读 32 字节，所以 mload(_bytes + 0x20 + _start)
+        // 所以读到的是:| 想要的地址 20 字节 | 后面多出来的 12 字节 |
+        // 地址在这 32 字节的高位。0x1000000000000000000000000 是 2^96，也就是 12 字节。
+        // 除掉它等于右移 96 位，把多出来的 12 字节丢掉，剩下的低 160 位就是地址。
         assembly {
             tempAddress := div(mload(add(add(_bytes, 0x20), _start)), 0x1000000000000000000000000)
         }

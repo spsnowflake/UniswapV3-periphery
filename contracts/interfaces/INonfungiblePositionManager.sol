@@ -46,6 +46,7 @@ interface INonfungiblePositionManager is
     /// （翻译）说明：返回给定 tokenId 对应的头寸信息。
     /// （翻译）开发说明：如果 tokenId 无效就抛出错误。
     /// （翻译）参数 tokenId：代表该头寸的代币 ID
+
     /// （翻译）返回 nonce：permit 用的 nonce
     /// （翻译）返回 operator：被授权可以花费这枚 NFT 的地址
     /// （翻译）返回 token0：该池子的 token0 地址
@@ -92,8 +93,9 @@ interface INonfungiblePositionManager is
 
     /// （翻译）说明：创建一个包在 NFT 里的新头寸
     /// （翻译）开发说明：在池子已经存在并且已经初始化时调用。注意：如果池子已创建但未初始化，
-    /// （翻译）并没有单独处理这种情况的方法，也就是默认池子已经初始化。
+    ///  并没有单独处理这种情况的方法，也就是默认池子已经初始化。
     /// （翻译）参数 params：铸造头寸所需参数，在 calldata 里按 MintParams 编码
+
     /// （翻译）返回 tokenId：代表所铸造头寸的代币 ID
     /// （翻译）返回 liquidity：这个头寸的流动性数量
     /// （翻译）返回 amount0：token0 的数量
@@ -124,6 +126,7 @@ interface INonfungiblePositionManager is
     /// （翻译）amount0Min：至少要花费的 token0，用作滑点检查，
     /// （翻译）amount1Min：至少要花费的 token1，用作滑点检查，
     /// （翻译）deadline：交易必须在这个时间之前被打包，变更才会生效
+
     /// （翻译）返回 liquidity：增加之后新得到的流动性数量
     /// （翻译）返回 amount0：为达到结果流动性实际用掉的 token0（原文 acheive 是 achieve 的拼写错误）
     /// （翻译）返回 amount1：为达到结果流动性实际用掉的 token1（原文 acheive 是 achieve 的拼写错误）
@@ -150,6 +153,7 @@ interface INonfungiblePositionManager is
     /// （翻译）amount0Min：烧掉这些流动性后，至少应记到账上的 token0，
     /// （翻译）amount1Min：烧掉这些流动性后，至少应记到账上的 token1，
     /// （翻译）deadline：交易必须在这个时间之前被打包，变更才会生效
+
     /// （翻译）返回 amount0：记到该头寸应付代币里的 token0 数量
     /// （翻译）返回 amount1：记到该头寸应付代币里的 token1 数量
     function decreaseLiquidity(DecreaseLiquidityParams calldata params)
@@ -174,7 +178,7 @@ interface INonfungiblePositionManager is
     function collect(CollectParams calldata params) external payable returns (uint256 amount0, uint256 amount1);
 
     /// （翻译）说明：销毁一个 tokenId，把它从 NFT 合约里删掉。该代币流动性必须为 0，并且所有代币
-    /// （翻译）必须先领完。
+    ///  必须先领完。
     /// （翻译）参数 tokenId：正在被销毁的代币 ID
     function burn(uint256 tokenId) external payable;
 }

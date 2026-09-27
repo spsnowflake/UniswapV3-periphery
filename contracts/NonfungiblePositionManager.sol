@@ -154,9 +154,12 @@ contract NonfungiblePositionManager is
             })
         );
 
+// 这里调用的就是 ERC721._mint(to, tokenId)。它做的是把 tokenId 记到 params.recipient 名下
         _mint(params.recipient, (tokenId = _nextId++));
 
         bytes32 positionKey = PositionKey.compute(address(this), params.tickLower, params.tickUpper);
+
+        // 用 pool.positions 读出 core 刚更新的手续费增长快照，写进这枚 NFT
         (, uint256 feeGrowthInside0LastX128, uint256 feeGrowthInside1LastX128, , ) = pool.positions(positionKey);
 
         // （翻译）幂等写入：同一个池子重复缓存不会改变已有 ID
@@ -232,6 +235,8 @@ contract NonfungiblePositionManager is
         // （翻译）burn 之后，池子里的手续费增长快照已经更新到当前这笔交易
         (, uint256 feeGrowthInside0LastX128, uint256 feeGrowthInside1LastX128, , ) = pool.positions(positionKey);
 
+// 改流动性之前，用「这次的 feeGrowth 减去 NFT 上的旧快照」乘以这枚 NFT 自己的流动性，把手续费累进 tokensOwed
+// core核心池计算的是一个区间的累计手续费。这里计算的是每个 NFT 自上次结算以来该分到的手续费。
         position.tokensOwed0 += uint128(
             FullMath.mulDiv(
                 feeGrowthInside0LastX128 - position.feeGrowthInside0LastX128,

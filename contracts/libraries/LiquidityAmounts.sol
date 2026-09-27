@@ -20,6 +20,7 @@ library LiquidityAmounts {
     /// （翻译）参数 sqrtRatioAX96：第一个 tick 边界对应的平方根价格
     /// （翻译）参数 sqrtRatioBX96：第二个 tick 边界对应的平方根价格
     /// （翻译）参数 amount0：投入的 token0 数量
+
     /// （翻译）返回 liquidity：算出来的流动性数量
     function getLiquidityForAmount0(
         uint160 sqrtRatioAX96,
@@ -53,6 +54,7 @@ library LiquidityAmounts {
     /// （翻译）参数 sqrtRatioBX96：第二个 tick 边界对应的平方根价格
     /// （翻译）参数 amount0：投入的 token0 数量
     /// （翻译）参数 amount1：投入的 token1 数量
+
     /// （翻译）返回 liquidity：能得到的最大流动性
     function getLiquidityForAmounts(
         uint160 sqrtRatioX96,
@@ -65,10 +67,16 @@ library LiquidityAmounts {
 
         if (sqrtRatioX96 <= sqrtRatioAX96) {
             liquidity = getLiquidityForAmount0(sqrtRatioAX96, sqrtRatioBX96, amount0);
+
+            // 当前价格落在区间内部时，头寸同时持有两种代币，所以要分别算出两笔流动性，再取较小的那个。
         } else if (sqrtRatioX96 < sqrtRatioBX96) {
+            // 从当前价格到上沿，头寸里是 token0。getLiquidityForAmount0(当前价格, 上沿, amount0) 问的是：这些 token0 能支撑多大的 L。
             uint128 liquidity0 = getLiquidityForAmount0(sqrtRatioX96, sqrtRatioBX96, amount0);
+            // 从下沿到当前价格，头寸里是 token1。getLiquidityForAmount1(下沿, 当前价格, amount1) 问的是：这些 token1 能支撑多大的 L。
             uint128 liquidity1 = getLiquidityForAmount1(sqrtRatioAX96, sqrtRatioX96, amount1);
 
+// 两边必须是同一个 L。若 liquidity0 更大，按它铸造就会多要 token1，超出你提供的 amount1。
+// 所以取 min(liquidity0, liquidity1)，这是两笔代币都能付得起的最大流动性。多出来的那种代币不会被用完。
             liquidity = liquidity0 < liquidity1 ? liquidity0 : liquidity1;
         } else {
             liquidity = getLiquidityForAmount1(sqrtRatioAX96, sqrtRatioBX96, amount1);
