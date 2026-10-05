@@ -18,6 +18,7 @@ library PositionValue {
     /// （翻译）参数 positionManager：Uniswap V3 的 NonfungiblePositionManager
     /// （翻译）参数 tokenId：要查询总价值的那枚代币的 tokenId
     /// （翻译）参数 sqrtRatioX96：用来计算本金数量的平方根价格 X96
+
     /// （翻译）返回 amount0：token0 总量，含本金和手续费
     /// （翻译）返回 amount1：token1 总量，含本金和手续费
     function total(
@@ -30,11 +31,11 @@ library PositionValue {
         return (amount0Principal + amount0Fee, amount1Principal + amount1Fee);
     }
 
-    /// （翻译）说明：计算若头寸被销毁，代币所有者应得的本金（当前充当流动性的那部分）
-    /// （翻译）也就是头寸被 burn 的时候
+    /// （翻译）说明：计算若头寸被销毁，代币所有者应得的本金（当前充当流动性的那部分），也就是头寸被 burn 的时候。
     /// （翻译）参数 positionManager：Uniswap V3 的 NonfungiblePositionManager
     /// （翻译）参数 tokenId：要查询应付本金的那枚代币的 tokenId
     /// （翻译）参数 sqrtRatioX96：用来计算本金数量的平方根价格 X96
+    
     /// （翻译）返回 amount0：token0 本金数量
     /// （翻译）返回 amount1：token1 本金数量
     function principal(
@@ -69,6 +70,7 @@ library PositionValue {
     /// （翻译）说明：计算应付给代币所有者的手续费总额
     /// （翻译）参数 positionManager：Uniswap V3 的 NonfungiblePositionManager
     /// （翻译）参数 tokenId：要查询应付手续费的那枚代币的 tokenId
+    
     /// （翻译）返回 amount0：以 token0 计的应付手续费
     /// （翻译）返回 amount1：以 token1 计的应付手续费
     function fees(INonfungiblePositionManager positionManager, uint256 tokenId)

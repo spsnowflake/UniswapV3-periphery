@@ -25,7 +25,7 @@ contract QuoterV2 is IQuoterV2, IUniswapV3SwapCallback, PeripheryImmutableState 
     using SafeCast for uint256;
     using PoolTicksCounter for IUniswapV3Pool;
 
-    /// （翻译）开发说明：临时存储变量，用来检查精确输出兑换里的一个安全条件。
+    // （翻译）开发说明：临时存储变量，用来检查精确输出兑换里的一个安全条件。
     uint256 private amountOutCached;
 
     constructor(address _factory, address _WETH9) PeripheryImmutableState(_factory, _WETH9) {}

@@ -16,13 +16,12 @@ import '../libraries/CallbackValidation.sol';
 
 /// （翻译）标题：为兑换提供报价
 /// （翻译）说明：对一笔给定兑换，可以拿到预期的输出或输入数量，而不真正执行兑换
-/// （翻译）开发说明：这些函数不省 gas，不应当在链上调用。正确做法是乐观地执行
-/// （翻译）兑换，然后在回调里核对数量。
+/// （翻译）开发说明：这些函数不省 gas，不应当在链上调用。正确做法是乐观地执行，兑换，然后在回调里核对数量。
 contract Quoter is IQuoter, IUniswapV3SwapCallback, PeripheryImmutableState {
     using Path for bytes;
     using SafeCast for uint256;
 
-    /// （翻译）开发说明：临时存储变量，用来检查精确输出兑换里的一个安全条件。
+    // （翻译）开发说明：临时存储变量，用来检查精确输出兑换里的一个安全条件。
     uint256 private amountOutCached;
 
     constructor(address _factory, address _WETH9) PeripheryImmutableState(_factory, _WETH9) {}

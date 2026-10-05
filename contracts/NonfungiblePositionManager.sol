@@ -52,21 +52,21 @@ contract NonfungiblePositionManager is
         uint128 tokensOwed1;
     }
 
-    /// （翻译）开发说明：本合约给各个池子分配的 ID
+    //  （翻译）开发说明：本合约给各个池子分配的 ID
     mapping(address => uint80) private _poolIds;
 
-    /// （翻译）开发说明：用池子 ID 反查 PoolKey，这样头寸数据里不必反复 SSTORE 整份池子信息
+    // （翻译）开发说明：用池子 ID 反查 PoolKey，这样头寸数据里不必反复 SSTORE 整份池子信息
     mapping(uint80 => PoolAddress.PoolKey) private _poolIdToPoolKey;
 
-    /// （翻译）开发说明：按 tokenId 存的头寸数据
+    // （翻译）开发说明：按 tokenId 存的头寸数据
     mapping(uint256 => Position) private _positions;
 
-    /// （翻译）开发说明：下一枚要铸造的 tokenId，从 1 开始，跳过 0
+    // （翻译）开发说明：下一枚要铸造的 tokenId，从 1 开始，跳过 0
     uint176 private _nextId = 1;
-    /// （翻译）开发说明：下一个首次使用的池子 ID，从 1 开始，跳过 0
+    // （翻译）开发说明：下一个首次使用的池子 ID，从 1 开始，跳过 0
     uint80 private _nextPoolId = 1;
 
-    /// （翻译）开发说明：代币描述合约地址，负责给头寸 NFT 生成 tokenURI
+    // （翻译）开发说明：代币描述合约地址，负责给头寸 NFT 生成 tokenURI
     address private immutable _tokenDescriptor;
 
     constructor(
@@ -259,6 +259,9 @@ contract NonfungiblePositionManager is
         emit IncreaseLiquidity(params.tokenId, liquidity, amount0, amount1);
     }
 
+
+
+
     /// （翻译）INonfungiblePositionManager
     function decreaseLiquidity(DecreaseLiquidityParams calldata params)
         external
@@ -284,6 +287,7 @@ contract NonfungiblePositionManager is
         // （翻译）burn 之后，池子里的手续费增长快照已经更新到当前这笔交易
         (, uint256 feeGrowthInside0LastX128, uint256 feeGrowthInside1LastX128, , ) = pool.positions(positionKey);
 
+// 记账：把这次撤出流动性换回的本金，加上这段时间该拿的手续费，累加进这枚 NFT 的 tokensOwed0 和 tokensOwed1。
         position.tokensOwed0 +=
             uint128(amount0) +
             uint128(
@@ -310,6 +314,9 @@ contract NonfungiblePositionManager is
 
         emit DecreaseLiquidity(params.tokenId, params.liquidity, amount0, amount1);
     }
+
+
+
 
     /// （翻译）INonfungiblePositionManager
     function collect(CollectParams calldata params)

@@ -33,6 +33,11 @@ library PoolAddress {
     /// （翻译）参数 key：池子键 PoolKey
     
     /// （翻译）返回 pool：V3 池子的合约地址
+    // 0xff 是 CREATE2 的固定前缀。
+    // factory 是部署者，也就是 V3 工厂。
+    // 中间那段是盐：按顺序排好的 token0、token1 和手续费档位。
+    // POOL_INIT_CODE_HASH 是池子合约的初始化代码哈希。
+    // CREATE2 的地址公式要求的就是这种紧凑拼接：keccak256( 0xff ++ 工厂地址 ++ salt ++ pool合约创建字节码哈希 )
     function computeAddress(address factory, PoolKey memory key) internal pure returns (address pool) {
         require(key.token0 < key.token1);
         pool = address(

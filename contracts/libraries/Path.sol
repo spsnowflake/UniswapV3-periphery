@@ -22,6 +22,7 @@ library Path {
 
     /// （翻译）说明：当且仅当路径包含两个或更多池子时返回 true
     /// （翻译）参数 path：编码后的兑换路径
+
     /// （翻译）返回：路径包含两个或更多池子则为 true，否则为 false
     function hasMultiplePools(bytes memory path) internal pure returns (bool) {
         return path.length >= MULTIPLE_POOLS_MIN_LENGTH;
@@ -29,6 +30,7 @@ library Path {
 
     /// （翻译）说明：返回路径里的池子数量
     /// （翻译）参数 path：编码后的兑换路径
+
     /// （翻译）返回：路径里的池子数量
     function numPools(bytes memory path) internal pure returns (uint256) {
         // （翻译）忽略第一个代币地址。从那以后，每一段手续费加代币偏移都表示一个池子。
@@ -37,6 +39,7 @@ library Path {
 
     /// （翻译）说明：解码路径中的第一个池子
     /// （翻译）参数 path：按字节编码的兑换路径
+    
     /// （翻译）返回 tokenA：该池子的第一个代币
     /// （翻译）返回 tokenB：该池子的第二个代币
     /// （翻译）返回 fee：该池子的手续费档位

@@ -16,10 +16,10 @@ abstract contract ERC721Permit is BlockTimestamp, ERC721, IERC721Permit {
     /// （翻译）开发说明：读取某个 tokenId 当前的 nonce，然后把它加 1，返回加之前的原值
     function _getAndIncrementNonce(uint256 tokenId) internal virtual returns (uint256);
 
-    /// （翻译）开发说明：permit 签名校验里用到的 name 哈希
+    // （翻译）开发说明：permit 签名校验里用到的 name 哈希
     bytes32 private immutable nameHash;
 
-    /// （翻译）开发说明：permit 签名校验里用到的 version 字符串哈希
+    // （翻译）开发说明：permit 签名校验里用到的 version 字符串哈希
     bytes32 private immutable versionHash;
 
     /// （翻译）说明：计算 nameHash 和 versionHash

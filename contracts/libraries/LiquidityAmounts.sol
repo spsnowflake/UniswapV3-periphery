@@ -47,8 +47,7 @@ library LiquidityAmounts {
         return toUint128(FullMath.mulDiv(amount1, FixedPoint96.Q96, sqrtRatioBX96 - sqrtRatioAX96));
     }
 
-    /// （翻译）说明：给定 token0、token1 数量以及当前
-    /// （翻译）池子价格和 tick 边界价格，计算能得到的最大流动性
+    /// （翻译）说明：给定 token0、token1 数量以及当前池子价格和 tick 边界价格，计算能得到的最大流动性。
     /// （翻译）参数 sqrtRatioX96：表示池子当前价格的平方根价格
     /// （翻译）参数 sqrtRatioAX96：第一个 tick 边界对应的平方根价格
     /// （翻译）参数 sqrtRatioBX96：第二个 tick 边界对应的平方根价格
@@ -118,12 +117,12 @@ library LiquidityAmounts {
         return FullMath.mulDiv(liquidity, sqrtRatioBX96 - sqrtRatioAX96, FixedPoint96.Q96);
     }
 
-    /// （翻译）说明：给定一定数量的流动性，以及当前
-    /// （翻译）池子价格和 tick 边界价格，计算对应的 token0 和 token1 数量
+    /// （翻译）说明：给定一定数量的流动性，以及当前池子价格和 tick 边界价格，计算对应的 token0 和 token1 数量。
     /// （翻译）参数 sqrtRatioX96：表示池子当前价格的平方根价格
     /// （翻译）参数 sqrtRatioAX96：第一个 tick 边界对应的平方根价格
     /// （翻译）参数 sqrtRatioBX96：第二个 tick 边界对应的平方根价格
     /// （翻译）参数 liquidity：正在估值的流动性
+
     /// （翻译）返回 amount0：token0 的数量
     /// （翻译）返回 amount1：token1 的数量
     function getAmountsForLiquidity(

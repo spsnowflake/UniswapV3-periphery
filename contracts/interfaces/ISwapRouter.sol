@@ -21,6 +21,7 @@ interface ISwapRouter is IUniswapV3SwapCallback {
 
     /// （翻译）说明：用 amountIn 数量的一种代币，尽可能多地换成另一种代币
     /// （翻译）参数 params：这笔兑换所需参数，在 calldata 里按 ExactInputSingleParams 编码
+
     /// （翻译）返回 amountOut：收到的代币数量
     function exactInputSingle(ExactInputSingleParams calldata params) external payable returns (uint256 amountOut);
 
@@ -34,6 +35,7 @@ interface ISwapRouter is IUniswapV3SwapCallback {
 
     /// （翻译）说明：沿指定路径，用 amountIn 数量的一种代币尽可能多地换成另一种
     /// （翻译）参数 params：这笔多跳兑换所需参数，在 calldata 里按 ExactInputParams 编码
+
     /// （翻译）返回 amountOut：收到的代币数量
     function exactInput(ExactInputParams calldata params) external payable returns (uint256 amountOut);
 
@@ -50,6 +52,7 @@ interface ISwapRouter is IUniswapV3SwapCallback {
 
     /// （翻译）说明：为了得到 amountOut 数量的另一种代币，尽可能少地花掉前一种代币
     /// （翻译）参数 params：这笔兑换所需参数，在 calldata 里按 ExactOutputSingleParams 编码
+
     /// （翻译）返回 amountIn：输入代币的数量
     function exactOutputSingle(ExactOutputSingleParams calldata params) external payable returns (uint256 amountIn);
 
@@ -63,6 +66,7 @@ interface ISwapRouter is IUniswapV3SwapCallback {
 
     /// （翻译）说明：沿指定路径（方向是反的）用尽可能少的输入，换到 amountOut 数量的输出
     /// （翻译）参数 params：这笔多跳兑换所需参数，在 calldata 里按 ExactOutputParams 编码
+    
     /// （翻译）返回 amountIn：输入代币的数量
     function exactOutput(ExactOutputParams calldata params) external payable returns (uint256 amountIn);
 }

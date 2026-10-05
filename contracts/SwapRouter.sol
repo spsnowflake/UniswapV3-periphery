@@ -31,11 +31,11 @@ contract SwapRouter is
     using Path for bytes;
     using SafeCast for uint256;
 
-    /// （翻译）开发说明：amountInCached 的占位初值。精确输出兑换算出来的输入数量
-    /// 永远不可能真的等于这个值（uint256 最大值）。
+    // （翻译）开发说明：amountInCached 的占位初值。精确输出兑换算出来的输入数量
+    // 永远不可能真的等于这个值（uint256 最大值）。
     uint256 private constant DEFAULT_AMOUNT_IN_CACHED = type(uint256).max;
 
-    /// （翻译）开发说明：临时存储变量，用来返回精确输出兑换计算出的输入数量。
+    // （翻译）开发说明：临时存储变量，用来返回精确输出兑换计算出的输入数量。
     uint256 private amountInCached = DEFAULT_AMOUNT_IN_CACHED;
 
     constructor(address _factory, address _WETH9) PeripheryImmutableState(_factory, _WETH9) {}
@@ -82,6 +82,11 @@ contract SwapRouter is
         // 2.amount1Delta > 0，池子要收 token1。
         (bool isExactInput, uint256 amountToPay) =
             amount0Delta > 0
+            // 比较的是地址的大小，不是数量。
+            // 精确输入的路径按成交顺序写，前面就是用户付出的币，所以池子要收的正好是第一个。
+            // 精确输出事先不知道要花多少，路径是倒着写的。C -> B -> A
+            // 精确输入的时候，用A换B，也就是pool池子中，A地址更小，所以下面这个为真。
+            // 精确输出、只有一跳：调用时路径被倒过来编码成 B -> A。也就是本来tokenIn > tokenOut。下面这个为假。
                 ? (tokenIn < tokenOut, uint256(amount0Delta))
                 : (tokenOut < tokenIn, uint256(amount1Delta));
         // isExactInput 用来区分路径是正向编码还是反向编码。精确输入是正向编码，精确输出是反向编码。
@@ -91,12 +96,14 @@ contract SwapRouter is
             pay(tokenIn, data.payer, msg.sender, amountToPay);
         } else {
             // （翻译）要么发起下一跳兑换，要么在这里付款
+            // 因为这里是回调,不代表只有2跳,下面exactOutputInternal方法还会进行swap，如果还有回调，那就可能是3跳甚至更多。
             if (data.path.hasMultiplePools()) {
                 data.path = data.path.skipToken();
+                // 价格是0,根据方法里面的逻辑,意思是这一跳不设价格上限，让池子一直换到协议允许的尽头，并要求输出数量必须足额。
                 exactOutputInternal(amountToPay, msg.sender, 0, data);
             } else {
                 amountInCached = amountToPay;
-            // 精确输出里，回调里叫 tokenIn 的其实是用户要收到的代币，真正要付的是第二个。
+            // 精确输出里，回调里叫 tokenIn 的其实是用户要收到的代币，真正要付的（池子收的）是第二个（tokenOut）。
                 tokenIn = tokenOut;
                 // （翻译）精确输出兑换的路径是反的，所以这里把换入和换出代币对调
                 pay(tokenIn, data.payer, msg.sender, amountToPay);
@@ -114,8 +121,10 @@ contract SwapRouter is
         // （翻译）接收方传 address(0) 时，表示兑换到路由器自己
         if (recipient == address(0)) recipient = address(this);
 
+// decodeFirstPool()方法只按路径里写好的顺序把前 43 个字节切开，不比较地址，也不交换两个代币。
         (address tokenIn, address tokenOut, uint24 fee) = data.path.decodeFirstPool();
 
+// 池子里的 token0（tokenIn） 永远是地址较小的那个代币
         bool zeroForOne = tokenIn < tokenOut;
 
         (int256 amount0, int256 amount1) =
@@ -136,6 +145,7 @@ contract SwapRouter is
 
     /// （翻译）说明：用 amountIn 数量的一种代币，尽可能多地换成另一种代币
     /// （翻译）参数 params：这笔兑换所需参数，在 calldata 里按 ExactInputSingleParams 编码
+
     /// （翻译）返回 amountOut：收到的代币数量
     function exactInputSingle(ExactInputSingleParams calldata params)
         external
@@ -229,12 +239,13 @@ contract SwapRouter is
             ? (uint256(amount0Delta), uint256(-amount1Delta))
             : (uint256(amount1Delta), uint256(-amount0Delta));
         // （翻译）技术上有可能拿不到完整的输出数量，
-        //  所以如果没有指定价格限制，就要求必须拿到完整输出，排除这种情况
+        //  所以如果没有指定价格限制，就要求必须拿到完整输出，排除这种情况（流动性可能不够，导致换不满）
         if (sqrtPriceLimitX96 == 0) require(amountOutReceived == amountOut);
     }
 
     /// （翻译）说明：为了得到 amountOut 数量的另一种代币，尽可能少地花掉前一种代币
     /// （翻译）参数 params：这笔兑换所需参数，在 calldata 里按 ExactOutputSingleParams 编码
+    
     /// （翻译）返回 amountIn：输入代币的数量
     function exactOutputSingle(ExactOutputSingleParams calldata params)
         external
@@ -258,6 +269,7 @@ contract SwapRouter is
 
     /// （翻译）说明：沿指定路径（方向是反的）用尽可能少的输入，换到 amountOut 数量的输出
     /// （翻译）参数 params：这笔多跳兑换所需参数，在 calldata 里按 ExactOutputParams 编码
+    
     /// （翻译）返回 amountIn：输入代币的数量
     function exactOutput(ExactOutputParams calldata params)
         external
